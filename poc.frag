@@ -3,6 +3,7 @@
 #include "../glslinc/inigo.glsl"
 
 layout(push_constant) uniform upc {
+  vec4 camera;
   vec2 aspect;
   float time;
 };
@@ -16,7 +17,9 @@ float sdf(vec3 p) {
   return length(p) - 0.3;
 }
 
-mat4 camera(vec3 p, float rot) {
+mat4 cam_matrix() {
+  float rot = camera.w;
+
   const vec3 v_up = vec3(0, 1, 0);
   vec3 v_right = vec3(sin(rot), 0, cos(rot));
   vec3 v_front = normalize(cross(v_up, v_right));
@@ -50,8 +53,8 @@ vec3 normal(vec3 pos) {
 
 void main() {
   const float fl = 1.0; // focal length
-  vec3 ro = vec3(0, 0, 2);
-  mat4 mat = camera(ro, time);
+  vec3 ro = camera.xyz;
+  mat4 mat = cam_matrix();
   vec3 rd = (mat * vec4(pos, fl, 1)).xyz;
 
   vec3 c = vec3(0);

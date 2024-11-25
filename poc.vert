@@ -1,6 +1,7 @@
 #version 450
 
 layout(push_constant) uniform upc {
+  vec4 camera;
   vec2 aspect;
   float time;
 };

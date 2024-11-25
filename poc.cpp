@@ -9,6 +9,7 @@ import vee;
 import voo;
 
 struct upc {
+  dotz::vec4 camera { 0, 0, 2, 0 };
   dotz::vec2 aspect;
   float time;
 } g_pc;
@@ -28,6 +29,7 @@ struct thread : voo::casein_thread {
       }
       ots_loop(dq, sw, [&](auto cb) {
         g_pc.time = t.millis() / 1000.0f;
+        g_pc.camera.w = g_pc.time;
         vee::cmd_push_vert_frag_constants(cb, *pl, &g_pc);
         oqr.run(cb, sw.extent());
       });
