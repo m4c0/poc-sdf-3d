@@ -16,12 +16,15 @@ float sdf(vec3 p) {
   return length(p) - 0.3;
 }
 
-mat3 camera(vec3 p, float rot) {
-  vec3 cw = normalize(-p);
-  vec3 cp = vec3(sin(rot), cos(rot), 0.0);
-  vec3 cu = normalize(cross(cw, cp));
-  vec3 cv = cross(cu, cw);
-  return mat3(cu, cv, cw);
+mat4 camera(vec3 p, float rot) {
+  const vec3 v_up = vec3(0, 1, 0);
+  vec3 v_right = vec3(sin(rot), 0, cos(rot));
+  vec3 v_front = normalize(cross(v_up, v_right));
+  return mat4(
+    vec4(v_right, 0),
+    vec4(v_up, 0),
+    vec4(v_front, 0),
+    vec4(0, 0, 0, 1));
 }
 
 float raymarch(vec3 ro, vec3 rd) {
@@ -48,8 +51,8 @@ vec3 normal(vec3 pos) {
 void main() {
   const float fl = 1.0; // focal length
   vec3 ro = vec3(0, 0, 2);
-  mat3 mat = camera(ro, 0);
-  vec3 rd = mat * vec3(pos, fl);
+  mat4 mat = camera(ro, time);
+  vec3 rd = (mat * vec4(pos, fl, 1)).xyz;
 
   vec3 c = vec3(0);
   float t = raymarch(ro, rd);
