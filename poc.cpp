@@ -33,6 +33,15 @@ static void in_setup_btn(casein::keys k, in_button b) {
   handle(KEY_UP,   k, in_up  (b));
 }
 
+static inline int in_axis(in_button n, in_button p) {
+  if (in_state[n] && !in_state[p]) return -1;
+  if (!in_state[n] && in_state[p]) return 1;
+  return 0;
+}
+static int in_r_axis() { return in_axis(R_LEFT, R_RIGHT); }
+static int in_s_axis() { return in_axis(S_LEFT, S_RIGHT); }
+static int in_w_axis() { return in_axis(W_FRONT, W_BACK); }
+
 struct thread : voo::casein_thread {
   thread() : casein_thread {} {
     using namespace casein;
