@@ -14,7 +14,36 @@ struct upc {
   float time;
 } g_pc;
 
+enum in_button {
+  R_LEFT = 0,
+  R_RIGHT,
+  S_LEFT,
+  S_RIGHT,
+  W_FRONT,
+  W_BACK,
+  IN_BTN_MAX,
+};
+static bool in_state[IN_BTN_MAX] {};
+static auto in_down(in_button b) { return [=] { in_state[b] = true; }; }
+static auto in_up(in_button b) { return [=] { in_state[b] = false; }; }
+
+static void in_setup_btn(casein::keys k, in_button b) {
+  using namespace casein;
+  handle(KEY_DOWN, k, in_down(b));
+  handle(KEY_UP,   k, in_up  (b));
+}
+
 struct thread : voo::casein_thread {
+  thread() : casein_thread {} {
+    using namespace casein;
+    in_setup_btn(K_LEFT,  R_LEFT);
+    in_setup_btn(K_RIGHT, R_RIGHT);
+
+    in_setup_btn(K_A, S_LEFT);
+    in_setup_btn(K_D, S_RIGHT);
+    in_setup_btn(K_W, W_FRONT);
+    in_setup_btn(K_S, W_BACK);
+  }
   void run() override {
     sitime::stopwatch t {};
     main_loop("poc", [&](auto & dq, auto & sw) {
