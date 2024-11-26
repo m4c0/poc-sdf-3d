@@ -65,11 +65,14 @@ struct thread : voo::casein_thread {
       } else {
         g_pc.aspect = { 1.0f, 1.0f / aspect };
       }
+
+      sitime::stopwatch frame {};
       ots_loop(dq, sw, [&](auto cb) {
+        g_pc.camera.w += in_r_axis() * frame.millis() / 1000.0f;
         g_pc.time = t.millis() / 1000.0f;
-        g_pc.camera.w = g_pc.time;
         vee::cmd_push_vert_frag_constants(cb, *pl, &g_pc);
         oqr.run(cb, sw.extent());
+        frame = {};
       });
     });
   }
