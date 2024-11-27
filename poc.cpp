@@ -40,7 +40,15 @@ static inline int in_axis(in_button n, in_button p) {
 }
 static int in_r_axis() { return in_axis(R_LEFT, R_RIGHT); }
 static int in_s_axis() { return in_axis(S_LEFT, S_RIGHT); }
-static int in_w_axis() { return in_axis(W_FRONT, W_BACK); }
+static int in_w_axis() { return in_axis(W_BACK, W_FRONT); }
+
+static void update_camera(float ms) {
+  auto a = g_pc.camera.w += in_r_axis() * ms / 1000.0f;
+  auto s = in_s_axis() * ms / 1000.0f;
+  auto w = in_w_axis() * ms / 1000.0f;
+  g_pc.camera.x += s * dotz::sin(a) + w * dotz::cos(a);
+  g_pc.camera.z += s * dotz::cos(a) - w * dotz::sin(a);
+}
 
 struct thread : voo::casein_thread {
   thread() : casein_thread {} {
@@ -68,11 +76,12 @@ struct thread : voo::casein_thread {
 
       sitime::stopwatch frame {};
       ots_loop(dq, sw, [&](auto cb) {
-        g_pc.camera.w += in_r_axis() * frame.millis() / 1000.0f;
+        update_camera(frame.millis());
+        frame = {};
+
         g_pc.time = t.millis() / 1000.0f;
         vee::cmd_push_vert_frag_constants(cb, *pl, &g_pc);
         oqr.run(cb, sw.extent());
-        frame = {};
       });
     });
   }
