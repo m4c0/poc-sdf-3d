@@ -42,8 +42,8 @@ float raymarch(vec3 ro, vec3 rd) {
 }
 
 vec3 normal(vec3 pos) {
-  const vec2 e = vec2(1.0, -1.0) * 0.5773; // 0.5773 ~= sqrt(3)/3
-  const float eps = 0.0005;
+  const vec2 e = vec2(1.0, -1.0);
+  const float eps = 0.0001;
   return normalize(
     e.xyy * sdf(pos + e.xyy * eps) + 
     e.yyx * sdf(pos + e.yyx * eps) + 
