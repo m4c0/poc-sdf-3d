@@ -29,11 +29,12 @@ struct thread : voo::casein_thread {
       auto pl = vee::create_pipeline_layout({ vee::vert_frag_push_constant_range<upc>() });
       voo::one_quad_render oqr { "poc", &dq, *pl };
 
+      // Flipping Y aspect to keep positive Y on top
       auto aspect = sw.aspect();
       if (aspect > 1.0) {
-        g_pc.aspect = { aspect, 1.0f };
+        g_pc.aspect = { aspect, -1.0f };
       } else {
-        g_pc.aspect = { 1.0f, 1.0f / aspect };
+        g_pc.aspect = { 1.0f, -1.0f / aspect };
       }
 
       sitime::stopwatch frame {};
