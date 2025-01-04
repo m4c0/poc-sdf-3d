@@ -10,7 +10,7 @@ import vee;
 import voo;
 
 struct upc {
-  dotz::vec4 camera { 0, 0, 2, 0 };
+  dotz::vec4 camera { 0, 0, 3, 0 };
   dotz::vec2 aspect;
   float time;
 } g_pc;

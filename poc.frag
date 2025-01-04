@@ -55,7 +55,7 @@ void main() {
   const float fl = 1.0; // focal length
   vec3 ro = camera.xyz;
   mat4 mat = cam_matrix();
-  vec3 rd = (mat * vec4(pos, fl, 1)).xyz;
+  vec3 rd = normalize(vec3(pos, -1)); //(mat * vec4(pos, fl, 1)).xyz;
 
   vec3 c = vec3(0);
   float t = raymarch(ro, rd);
