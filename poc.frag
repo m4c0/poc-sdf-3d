@@ -30,15 +30,17 @@ mat4 cam_matrix() {
     vec4(0, 0, 0, 1));
 }
 
-float raymarch(vec3 ro, vec3 rd) {
+vec2 raymarch(vec3 ro, vec3 rd) {
   float t = 0;
+  float x = 0;
   for (int i = 0; i < 256; i++) {
     float h = sdf(ro + rd * t);
-    if (h < 0.001) return t;
+    if (h < 0.001) return vec2(t, i);
     if (t > max_t) break;
+    x = i;
     t += h;
   }
-  return max_t;
+  return vec2(max_t, x);
 }
 
 vec3 normal(vec3 pos) {
@@ -58,7 +60,8 @@ void main() {
   vec3 rd = normalize(vec3(pos, -1)); //(mat * vec4(pos, fl, 1)).xyz;
 
   vec3 c = vec3(0);
-  float t = raymarch(ro, rd);
+  vec2 ti = raymarch(ro, rd);
+  float t = ti.x;
   if (t < max_t) {
     vec3 pos = ro + rd * t;
     vec3 nor = normal(pos);
@@ -71,4 +74,5 @@ void main() {
   }
 
   colour = vec4(c, 1);
+  // colour = vec4(vec3(ti.y) / 256.0, 1); // iteration debug
 }
