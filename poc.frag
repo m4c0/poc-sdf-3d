@@ -14,7 +14,12 @@ layout(location = 0) out vec4 colour;
 const float max_t = 100;
 
 float sdf(vec3 p) {
-  return length(p) - 0.3;
+  float circle = length(p) - 0.35;
+
+  vec3 q = abs(p) - 0.3 + 0.1;
+  float box = length(max(q, 0)) + min(max(q.x, max(q.y, q.z)), 0.0) - 0.1;
+
+  return max(box, -circle);
 }
 
 vec2 raymarch(vec3 ro, vec3 rd) {
