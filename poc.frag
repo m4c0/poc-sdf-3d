@@ -16,10 +16,10 @@ const float max_t = 100;
 float sdf(vec3 p) {
   float circle = length(p) - 0.35;
 
-  vec3 q = abs(p) - 0.3 + 0.1;
-  float box = length(max(q, 0)) + min(max(q.x, max(q.y, q.z)), 0.0) - 0.1;
+  vec3 q = abs(p) - 0.3;
+  float box = length(max(q, 0)) + min(max(q.x, max(q.y, q.z)), 0.0);
 
-  return max(box, -circle);
+  return max(box, circle);
 }
 
 vec2 raymarch(vec3 ro, vec3 rd) {
@@ -62,9 +62,14 @@ void main() {
     vec3 pos = ro + rd * t;
     vec3 nor = normal(pos);
 
-    float dif = clamp(dot(nor, vec3(0.5773)), 0.0, 1.0);
+    vec3 light = vec3(0.5773);
+    float sp_pwr = 20;
+
+    float spec = pow(dot(nor, normalize((light + ro) / 2)), sp_pwr);
+    float dif = clamp(dot(nor, light), 0.0, 1.0);
     float amb = 0.5 + 0.5 * dot(nor, vec3(0.0, 1.0, 0.0));
-    c = vec3(0.3, 0.03, 0.02) * amb + vec3(0.8, 0.1, 0.07) * dif;
+    c = vec3(0.3, 0.03, 0.02) * amb
+      + vec3(0.8, 0.1, 0.07) * dif * spec;
   } else {
     c = mix(vec3(0.15), vec3(0.1), step(0, pos.y));
   }
