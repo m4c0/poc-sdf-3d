@@ -76,4 +76,5 @@ void main() {
 
   colour = vec4(c, 1);
   // colour = vec4(vec3(ti.y) / 256.0, 1); // iteration debug
+  // colour = vec4(vec3(clamp(t, 0, 1)), 1); // depth
 }
